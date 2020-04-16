@@ -1,5 +1,6 @@
 # Detection-of-Artifical-and-Natural-ripened-Mangoes
 This project used MPEG-7 colour dominant features to detect artifical and naturally ripened fruits.
+Language : MATLAB , version : 2019
 
 # Mango Classification
 ## Steps

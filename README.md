@@ -34,3 +34,12 @@ Run Query.m for testing dataset.
 For my dataset, the threshold was set for the Red Color at 200.
 
 For this threshold, an accuracy of ~ 90% was achieved.
+
+### Training Result for Red Color
+
+![Image of Training Cluster](https://github.com/rakeshkumariyer/Detection-of-Artifical-and-Natural-ripened-Mangoes/blob/master/Results/Cluster%20Train.jpg)
+
+### Testing Result for Red Color
+
+![Image of Training Cluster](https://github.com/rakeshkumariyer/Detection-of-Artifical-and-Natural-ripened-Mangoes/blob/master/Results/Cluster%20Test.jpg)
+

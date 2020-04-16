@@ -6,20 +6,21 @@ fidnew =fopen('Natural_test01.txt','w');
 
 color_mat = [];
 r_mat = [];
-for k=1:length(original_files)
+for k=1:length(original_files)   % Run for each image and extract the dominant color
     filename=[path '/' original_files(k).name];
     data = imread(filename);
     data = imresize(data , [227,227]);
     [mask,lab] = createMask(data);
-    mask = filterRegions(mask);
+    mask = filterRegions(mask);   % Filter out any mask size less than a threshold. Major Area would be covered by the fruit.
     [mask,lab] = segmentImage(data,mask);
-    %Make sure only one region exists, if multiple make changes in the filter-
-    %-regions
+    %Make sure only one region of interest exists, if multiple make changes in the filterRegions.m file
     ROI = regionprops(mask, 'BoundingBox','Area');
     lab = imcrop(lab, ROI.BoundingBox);
     imshow(lab)
     originalImage = lab;
-    [rows,columns,numberOfColorBands] = size(originalImage);
+    
+    % MPEG-7 Colour Dominant Feature
+        [rows,columns,numberOfColorBands] = size(originalImage);
     % Construct the 3D gamut.
     %lutSize = 256;  % Use 256 to get maximum resolution possible out of a 24 bit RGB image.
     lutSize = 8;  % Use a smaller LUT size to get colors grouped into fewer, larger groups in the gamut.
@@ -46,6 +47,8 @@ for k=1:length(original_files)
             colorFrequencyImage(row, col) =  freq;
         end
     end
+    
+    % Initilize variables to 0
     dom1R = 0; dom1G = dom1R; dom1B = dom1R;
     dom2R = 0; dom2G = dom2R; dom2B = dom2R;
     dom3R = 0; dom3G = dom3R; dom3B = dom3R;
@@ -54,9 +57,11 @@ for k=1:length(original_files)
     domfreq2=0;
     domfreq3=0;domfreq4=0; 
     dist1 =0;dist2 =0; dist3=0; dist4=0;
+    
     cfi = colorFrequencyImage;
     
-    resolution =rows * columns;% dominant frequency
+    %Extract 4 Dominant frequencies
+    resolution =rows * columns;
     m1 =max(colorFrequencyImage);
     maxfreq1 =max(m1);
     
@@ -135,13 +140,17 @@ for k=1:length(original_files)
     color2 = [dom2R  dom2G  dom2B normdist2;];
     color3 = [dom3R  dom3G  dom3B normdist3;];
     color4 = [dom4R  dom4G  dom4B normdist4;];
+    
     %color_mat = [color_mat;color1;color2;color3;color4];
+    
     color = [color1;color2;color3;color4]; 
     rcolor = [color1(1,1:3);color2(1,1:3);color3(1,1:3);color4(1,1:3);];
     
-    %removing black color as dominant color
+    %removing black color as dominant color, because black color is the background which isn't needed.
     nbcolor = color(any(rcolor,2),:);
     meanvalue = mean(nbcolor);  %find mean of each column
+    
+    % Through analysis of each color element(R,G,B) in the color variable , it is found that red color made a distinction between aritfical and natural images.
     meanR = meanvalue(1);       %mean value of R
     r_mat = [r_mat;meanR];      %storing meanR values
     
@@ -156,5 +165,5 @@ for k=1:length(original_files)
     fprintf(fidnew,'\n%f \t%f\t %f \t %f;',color4);
 end
 save NRtestnew.mat r_mat -v7.3;
-save Ntestnew.mat color_mat -v7.3;
+save Ntestnew.mat color_mat -v7.3;  % Can make analysis of the colours in this saved matrix.
 fclose(fidnew);
